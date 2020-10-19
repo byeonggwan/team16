@@ -1,0 +1,65 @@
+{
+  "seoul": {
+    "name":"Seoul Special City",
+    "desc1": "The capital and largest metropolis of South Korea",
+    "desc2": "Seoul is in the northwest of South Korea.",
+    "lat": 37.566675,
+    "lon": 126.978413
+  },
+  "incheon": {
+    "name":"Incheon Metropolitan City",
+    "desc1": "Designated as Korea's first free economic zone",
+    "desc2": "Located in northwestern South Korea",
+    "lat": 37.483333,
+    "lon": 126.633333
+  },
+  "daejeon": {
+    "name":"Daejeon Metropolitan City",
+    "desc1": "South Korea's fifth-largest metropolis",
+    "desc2": "Located in the central region of South Korea",
+    "lat": 36.350833,
+    "lon": 127.385
+  },
+  "sejong": {
+    "name":"Sejong Special Self-Governing City",
+    "desc1": "A de facto administrative capital of South Korea.",
+    "desc2": "Surrounded by the Chungcheongnam-do, and Chungcheongbuk-do",
+    "lat": 36.5,
+    "lon": 127.266667
+  },
+  "busan": {
+    "name":"Busan Metropolitan City",
+    "desc1": "South Korea's second-most populous city after Seoul",
+    "desc2": "Located on the Southeastern tip of the Korean Peninsula.",
+    "lat": 35.166667,
+    "lon": 129.066667
+  },
+  "ulsan": {
+    "name":"Ulsan Metropolitan City",
+    "desc1": "South Korea's seventh-largest metropolitan city",
+    "desc2": "Ulsan is the industrial powerhouse of South Korea.",
+    "lat": 35.538333,
+    "lon": 129.311389
+  },
+  "daegu": {
+    "name":"Daegu Metropolitan City",
+    "desc1": "The third-largest metropolitan area in the nation",
+    "desc2": "Daegu sits in a basin surrounded by low mountains.",
+    "lat": 35.866667,
+    "lon": 128.6
+  },
+  "gwangju": {
+    "name":"Gwangju Metropolitan City",
+    "desc1": "The sixth-largest city in South Korea",
+    "desc2": "Gwangju is in the southwest of South Korea.",
+    "lat": 35.159444,
+    "lon": 126.8525
+  },
+  "jeju": {
+    "name":"Jeju Special Self-Governing Province",
+    "desc1": "The island lies in the Korea Strait.",
+    "desc2": "Home to South Korea's tallest mountain, Mt. Halla.",
+    "lat": 33.366667,
+    "lon": 126.533333
+  }
+}
