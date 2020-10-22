@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             ulsan.lat = Ulsan.getDouble("lat");
             ulsan.lon = Ulsan.getDouble("lon");
 
-            JSONObject Incheon = jObj.getJSONObject("ulsan");
+            JSONObject Incheon = jObj.getJSONObject("incheon");
             city incheon = new city();
             incheon.name = Incheon.getString("name");
             incheon.desc1  = Incheon.getString("desc1");
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             incheon.lat = Incheon.getDouble("lat");
             incheon.lon = Incheon.getDouble("lon");
 
-            JSONObject DaeJeon = jObj.getJSONObject("ulsan");
+            JSONObject DaeJeon = jObj.getJSONObject("daejeon");
             city daejeon = new city();
             daejeon.name = DaeJeon.getString("name");
             daejeon.desc1  = DaeJeon.getString("desc1");
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             daejeon.lat = DaeJeon.getDouble("lat");
             daejeon.lon = DaeJeon.getDouble("lon");
 
-            JSONObject SeJong = jObj.getJSONObject("ulsan");
+            JSONObject SeJong = jObj.getJSONObject("sejong");
             city sejong = new city();
             sejong.name = SeJong.getString("name");
             sejong.desc1  = SeJong.getString("desc1");
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             sejong.lat = SeJong.getDouble("lat");
             sejong.lon = SeJong.getDouble("lon");
 
-            JSONObject DaeGu = jObj.getJSONObject("ulsan");
+            JSONObject DaeGu = jObj.getJSONObject("daegu");
             city daegu = new city();
             daegu.name = DaeGu.getString("name");
             daegu.desc1  = DaeGu.getString("desc1");
