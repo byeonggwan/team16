@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final float[] orientationAngles = new float[3];
     private final float[] newRotationMatrix = new float[9];
 
+    //for description
+    private double latitude;
+    private double longitude;
+
     private TextView directionView;
 
     @Override
@@ -139,14 +143,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 cityLatList.add(info.getDouble("lat"));
                 cityLonList.add(info.getDouble("lon"));
             }
-
-            for(int val = 0; val<cityList.size(); val++) {
-
-                JSONObject info = cities.getJSONObject(cityList.get(val));
-                //if(condition- info.getDouble(name) ~~)direction are same
-                cityView.setText(cityNameList.get(val) + "\n" + cityDesc1List.get(val) + "\n" + cityDesc2List.get(val));
-            }
-
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -221,6 +217,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setScaleBarEnabled(false);   //scale bar
         uiSettings.setZoomControlEnabled(false);    //zoom button
+
+        naverMap.addOnLocationChangeListener(location ->{
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        });
     }
 
 
@@ -355,5 +356,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(directionView.getText() != str)
             directionView.setText(str);
 
+        updateDescription(azimuth);
     }
+
+    public void updateDescription(int azimuth){
+        for(int val = 0; val<cityList.size(); val++){
+            double degree;
+            double lat_here = Math.toRadians(latitude);
+            double lat_there = Math.toRadians(cityLatList.get(val));
+            double lon_diff = Math.toRadians(cityLonList.get(val)-longitude);
+            double y = Math.sin(lon_diff) * Math.cos(lat_there);
+            double x = Math.cos(lat_here) * Math.sin(lat_there) - Math.sin(lat_here) * Math.cos(lat_there) * Math.cos(lon_diff);
+            degree = (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+            if(degree > 180.0f){
+                degree = degree - 360.0f;
+            }
+
+            if (degree >= azimuth && degree < azimuth + 1){
+                cityView.setText(cityNameList.get(val) + "\n" + cityDesc1List.get(val) + "\n" + cityDesc2List.get(val));
+            }
+        }
+    }
+
 }
