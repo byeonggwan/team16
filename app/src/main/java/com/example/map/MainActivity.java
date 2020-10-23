@@ -244,23 +244,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return cityinfo;
     }
-    /*public void distance(city city, double cam_lat, double cam_lon){
-        int earth_radius = 6371;
-        double lat_dis = (city.lat - cam_lat)*Math.PI/180;
-        double lon_dis = (city.lon - cam_lon)*Math.PI/180;
-        /*
-         Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
-         Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-         */
+    public int distance(double lat, double lon){
+        double dist;
+        double x = longitude - lon;
+        double dist_temp = Math.sin(Math.toRadians(latitude)) * Math.sin(Math.toRadians(lat))
+                + Math.cos(Math.toRadians(latitude)) * Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(x));
 
-    /*    double buffer_const_a = Math.pow(Math.sin(lat_dis/2),2) +
-                Math.cos((city.lat)*Math.PI/180)*Math.cos((cam_lat)*Math.PI/180)*Math.pow(Math.sin(lon_dis/2),2);
+        dist = Math.toDegrees(Math.acos(dist_temp)) * 60 * 1.1515 * 1609.344;
+
+
+        /*double buffer_const_a = Math.pow(Math.sin(lat_dis/2),2) +
+                Math.cos((lat)*Math.PI/180)*Math.cos((latitude)*Math.PI/180)*Math.pow(Math.sin(lon_dis/2),2);
         double buffer_const_c = 2*Math.atan2(Math.sqrt(buffer_const_a),Math.sqrt(1-buffer_const_a));
-        double distance = earth_radius * buffer_const_c;
+        int distance = (int)(earth_radius * buffer_const_c);*/
 
-        city.distance = distance;
+        return (int)dist;
     }
-    */
+
 
     //sensor activity
     @Override
@@ -373,7 +373,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             if (degree >= azimuth && degree < azimuth + 1){
-                cityView.setText(cityNameList.get(val) + "\n" + cityDesc1List.get(val) + "\n" + cityDesc2List.get(val));
+                cityView.setText(cityNameList.get(val) + "\n" + cityDesc1List.get(val) + "\n" + cityDesc2List.get(val) + "\n"
+                        + distance(cityLatList.get(val), cityLonList.get(val)) + "m (" + cityLatList.get(val) + ", " + cityLonList.get(val) + ")");
             }
         }
     }
