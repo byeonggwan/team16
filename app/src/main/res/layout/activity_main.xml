@@ -11,6 +11,88 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/layout_busan"
+        android:background="@drawable/round"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView_busan"
+            app:srcCompat="@drawable/ic_busan"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Busan Metropolitan City"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/layout_gwangju"
+        android:background="@drawable/round"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView_gwangju"
+            app:srcCompat="@drawable/ic_gwangju"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gwangju Metropolitan City"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/layout_seoul"
+        android:background="@drawable/round"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView_seoul"
+            app:srcCompat="@drawable/ic_seoul"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seoul Special City"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/layout_ulsan"
+        android:background="@drawable/round"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView_ulsan"
+            app:srcCompat="@drawable/ic_ulsan"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ulsan Metropolitan City"/>
+    </LinearLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"

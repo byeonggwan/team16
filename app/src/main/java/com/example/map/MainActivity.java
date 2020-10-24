@@ -17,12 +17,18 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private TextView directionView;
 
+    //for city overlay
+    private ViewGroup[] viewGroups = new ViewGroup[9];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //sensor for direction
         directionView = findViewById(R.id.direction);
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         // Load Views
         previewView = findViewById(R.id.previewView);
@@ -110,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(locationPermissionGranted()) {
             FragmentManager fm = getSupportFragmentManager();
             MapFragment mapFragment = (MapFragment) fm.findFragmentById(R.id.map);
+            sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
             if (mapFragment == null) {
                 mapFragment = MapFragment.newInstance();
@@ -119,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapFragment.getMapAsync(this);
             locationSource =
                     new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+
         }
 
         //city description
@@ -147,7 +157,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        viewGroups[0] = (ViewGroup) findViewById(R.id.layout_seoul);
+        viewGroups[0].setY(2440/3);
+        viewGroups[4] = (ViewGroup) findViewById(R.id.layout_busan);
+        viewGroups[4].setY(2440/3);
+        viewGroups[5] = (ViewGroup) findViewById(R.id.layout_ulsan);
+        viewGroups[5].setY(2440/3);
+        viewGroups[7] = (ViewGroup) findViewById(R.id.layout_gwangju);
+        viewGroups[7].setY(2440/3);
     }
 
     // For Camera Preview - Connect previewview and camera
@@ -362,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void updateDescription(int azimuth){
         for(int val = 0; val<cityList.size(); val++){
             double degree;
+            double diff;
             double lat_here = Math.toRadians(latitude);
             double lat_there = Math.toRadians(cityLatList.get(val));
             double lon_diff = Math.toRadians(cityLonList.get(val)-longitude);
@@ -376,6 +394,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 cityView.setText(cityNameList.get(val) + "\n" + cityDesc1List.get(val) + "\n" + cityDesc2List.get(val) + "\n"
                         + distance(cityLatList.get(val), cityLonList.get(val)) + "m (" + cityLatList.get(val) + ", " + cityLonList.get(val) + ")");
             }
+
+            diff = degree - azimuth;
+            if(val == 0 || val == 4 || val == 5 || val == 7){
+                int percent = (int)((diff + 25.0f) / 70.0f * 1440);
+                viewGroups[val].setX(percent);
+                /*if (diff > -40.0f && diff < 40.0f){
+                    // val, diff 에 맞춰서 로고 출력
+                    viewGroups[val].setVisibility(View.VISIBLE);
+                    int percent = (int)((diff + 40.0f) / 80.0f * 1440) / 10 * 10;
+                    viewGroups[val].setX(percent);
+                }
+                else{
+                    viewGroups[val].setVisibility(View.INVISIBLE);
+                }*/
+                final double max_distance = 600000.0f;
+                double distance = distance(cityLatList.get(val), cityLonList.get(val));
+                if( distance > 100000.0f)
+                    distance = 100000.0f;
+                int layout_xy =  (int)( 800.0f * ( (max_distance - distance) / max_distance ));
+                ViewGroup.LayoutParams layoutParam = viewGroups[val].getLayoutParams();
+                layoutParam.width = layout_xy;
+                layoutParam.height = layout_xy;
+                viewGroups[val].setLayoutParams(layoutParam);
+            }
+
         }
     }
 
