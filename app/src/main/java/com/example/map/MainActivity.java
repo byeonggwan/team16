@@ -54,8 +54,10 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, SensorEventListener {
 
+    String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION};
+
     //Map
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+    private static final int PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap naverMap;
 
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Camera
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     private PreviewView previewView;
-    private final int MY_PERMISSION_REQUEST_CAMERA = 1001;
 
     //Sensor for direction
     private SensorManager sensorManager;
@@ -96,40 +97,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(!hasPermissions(PERMISSIONS)){
+            requestPermissions(PERMISSIONS, PERMISSION_REQUEST_CODE);
+        }
         //sensor for direction
         directionView = findViewById(R.id.direction);
 
         // Load Views
         previewView = findViewById(R.id.previewView);
 
-        // For Camera Preview
-        if (cameraPermissionsGranted()) {
-            cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-
-            try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                bindPreview(cameraProvider);
-            } catch (ExecutionException | InterruptedException e) {
-
-                }
-        }
-
         //For naver map
-        if(locationPermissionGranted()) {
-            FragmentManager fm = getSupportFragmentManager();
-            MapFragment mapFragment = (MapFragment) fm.findFragmentById(R.id.map);
-            sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        FragmentManager fm = getSupportFragmentManager();
+        MapFragment mapFragment = (MapFragment) fm.findFragmentById(R.id.map);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-            if (mapFragment == null) {
-                mapFragment = MapFragment.newInstance();
-                fm.beginTransaction().add(R.id.map, mapFragment).commit();
-            }
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance();
+            fm.beginTransaction().add(R.id.map, mapFragment).commit();
+        }
 
-            mapFragment.getMapAsync(this);
-            locationSource =
-                    new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+        mapFragment.getMapAsync(this);
+        locationSource =
+                new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
+
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+
+        try {
+            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+            bindPreview(cameraProvider);
+        } catch (ExecutionException | InterruptedException e) {
 
         }
+
 
         //city description
         cityView = findViewById(R.id.description);
@@ -165,6 +164,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         viewGroups[5].setY(2440/3);
         viewGroups[7] = (ViewGroup) findViewById(R.id.layout_gwangju);
         viewGroups[7].setY(2440/3);
+
+    }
+
+    private boolean hasPermissions(String[] permissions) {
+        int result;
+
+        for (String perms : permissions){
+            result = ContextCompat.checkSelfPermission(this, perms);
+            if (result == PackageManager.PERMISSION_DENIED){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // For Camera Preview - Connect previewview and camera
@@ -182,44 +195,55 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview);
     }
 
-    private boolean cameraPermissionsGranted(){
-
+    /*private boolean PermissionGranted(){
+        //location permission
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA},MY_PERMISSION_REQUEST_CAMERA);
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA},PERMISSION_REQUEST_CODE);
 
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA},MY_PERMISSION_REQUEST_CAMERA);
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA},PERMISSION_REQUEST_CODE);
             }
         }
-
-        return true;
-    }
-
-    private boolean locationPermissionGranted(){
-        //location permission
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
 
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
             }
         }
 
         return true;
-    }
+    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,  @NonNull int[] grantResults) {
+
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+
+                    Toast.makeText(this,"승인이 허가되어 있습니다.",Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(this,"아직 승인받지 않았습니다.",Toast.LENGTH_LONG).show();
+                }
+                break;
+            }
+        }
+
+
         if (locationSource.onRequestPermissionsResult(
                 requestCode, permissions, grantResults)) {
             if (!locationSource.isActivated()) {
                 naverMap.setLocationTrackingMode(LocationTrackingMode.None);
             }
 
-            return;
         }
         super.onRequestPermissionsResult(
                 requestCode, permissions, grantResults);
@@ -228,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
+
         this.naverMap = naverMap;
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
@@ -239,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             latitude = location.getLatitude();
             longitude = location.getLongitude();
         });
+
     }
 
 
@@ -262,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return cityinfo;
     }
     public int distance(double lat, double lon){
+
         double dist;
         double x = longitude - lon;
         double dist_temp = Math.sin(Math.toRadians(latitude)) * Math.sin(Math.toRadians(lat))
@@ -270,12 +297,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         dist = Math.toDegrees(Math.acos(dist_temp)) * 60 * 1.1515 * 1609.344;
 
 
-        /*double buffer_const_a = Math.pow(Math.sin(lat_dis/2),2) +
-                Math.cos((lat)*Math.PI/180)*Math.cos((latitude)*Math.PI/180)*Math.pow(Math.sin(lon_dis/2),2);
-        double buffer_const_c = 2*Math.atan2(Math.sqrt(buffer_const_a),Math.sqrt(1-buffer_const_a));
-        int distance = (int)(earth_radius * buffer_const_c);*/
+    /*double buffer_const_a = Math.pow(Math.sin(lat_dis/2),2) +
+            Math.cos((lat)*Math.PI/180)*Math.cos((latitude)*Math.PI/180)*Math.pow(Math.sin(lon_dis/2),2);
+    double buffer_const_c = 2*Math.atan2(Math.sqrt(buffer_const_a),Math.sqrt(1-buffer_const_a));
+    int distance = (int)(earth_radius * buffer_const_c);*/
 
-        return (int)dist;
+        return (int) dist;
     }
 
 
@@ -288,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onResume() {
+
         super.onResume();
 
         // Get updates from the accelerometer and magnetometer at a constant rate.
@@ -307,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             sensorManager.registerListener(this, magneticField,
                     SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
         }
+
     }
 
     @Override
@@ -329,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     0, magnetometerReading.length);
         }
         updateOrientationAngles();
+
     }
 
     // Compute the three orientation angles based on the most recent readings from
