@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             diff = degree - azimuth;
             if(val == 0 || val == 4 || val == 5 || val == 7){
-                int percent = (int)((diff + 25.0f) / 70.0f * 1440);
+                int percent = (int)((diff + 25.0f) / 70.0f * 1440) / 100 * 100;
                 viewGroups[val].setX(percent);
                 /*if (diff > -40.0f && diff < 40.0f){
                     // val, diff 에 맞춰서 로고 출력
